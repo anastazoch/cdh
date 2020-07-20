@@ -1,0 +1,13 @@
+elasticsearch/*
+filebeat/*
+kibana/*
+logstash/*
+metricbeat/*
+packetbeat/*
+
+!elasticsearch/.gitkeep
+!filebeat/.gitkeep
+!kibana/.gitkeep
+!logstash/.gitkeep
+!metricbeat/.gitkeep
+!packetbeat/.gitkeep

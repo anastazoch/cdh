@@ -1,0 +1,85 @@
+{
+  "schema_version":     1,
+  "name":               "ELASTIC_STACK",
+  "version":            "7.8.0",
+  "setActiveSymlink":   true,
+
+  "depends": "CDH (>= 5.0),
+
+  "scripts": {
+    "defines": "elastic_stack_env.sh"
+  },
+
+  "packages": [
+    { "name": "elasticsearch",
+      "version": "7.8.0"
+    }
+    ,{ "name": "kibana",
+       "version": "7.8.0"
+    }
+    ,{ "name": "logstash",
+       "version": "7.8.0"
+    }
+    ,{ "name": "auditbeat",
+       "version": "7.8.0"
+    }
+    ,{ "name": "filebeat",
+       "version": "7.8.0"
+    }
+    ,{ "name": "metricbeat",
+       "version": "7.8.0"
+    }
+    ,{ "name": "packetbeat",
+       "version": "7.8.0"
+    }
+  ],
+
+  "components": [
+    { "name":    "elasticsearch",
+      "version": "7.8.0",
+      "pkg_version": "7.8.0"
+    }
+    ,{ "name": "kibana",
+       "version": "7.8.0",
+       "pkg_version": "7.8.0"
+    }
+    ,{ "name": "logstash",
+       "version": "7.8.0",
+       "pkg_version": "7.8.0"
+    }
+    ,{ "name": "filebeat",
+       "version": "7.8.0",
+       "pkg_version": "7.8.0"
+    }
+    ,{ "name": "metricbeat",
+       "version": "7.8.0",
+       "pkg_version": "7.8.0"
+    }
+    ,{ "name": "packetbeat",
+       "version": "7.8.0",
+       "pkg_version": "7.8.0"
+    } 
+  ],
+
+  "provides": [
+    "elasticsearch",
+    "kibana",
+    "logstash",
+    "filebeat",
+    "metricbeat",
+    "packetbeat"
+  ],
+
+  "users": {
+    "elastic": {
+      "longname"    : "Elastic Stack",
+      "home"        : "/var/lib/elastic",
+      "shell"       : "/bin/bash",
+      "extra_groups": []
+    }
+  },
+
+  "groups": [
+     "elastic"
+  ]
+}
