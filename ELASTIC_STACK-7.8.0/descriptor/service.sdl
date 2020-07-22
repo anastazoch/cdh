@@ -63,43 +63,12 @@
                 "configWriter": {
                         "generators": [
                         {
-                                "filename": "jvm.properties",
+                                "filename": "jvm.options",
                                 "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
                         },
                         {
-                                "filename": "elasticsearch.properties",
+                                "filename": "log4j2.properties",
                                 "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
                                 "additionalConfigs" : [
                                 {
                                         "key" : "node.name",
@@ -109,16 +78,15 @@
                                         "key" : "network.host",
                                         "value" : "[\"${host}\", _local_]"
                                 }]
-                        }
-                        ],
-                        "peerConfigGenerators" : [
-                        {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
-                        }]
+                        }], 
+			"auxConfigGenerators" : [
+    			{
+			      "filename" : "elasticsearch.yml",
+			      "sourceFilename" : "aux/elasticsearch.yml"
+			}
+  			]
                 }
-        },
+        	},
 		{
                 "name": "Kibana",
                 "label": "Kibana Dashboard",
@@ -149,64 +117,13 @@
                         }
                 ],
                 "configWriter": {
-                        "generators": [
-                        {
-                                "filename": "jvm.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
-                        },
-                        {
-                                "filename": "elasticsearch.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
-                        }
-                        ],
-                        "peerConfigGenerators" : [
-                        {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
-                        }]
+			"auxConfigGenerators" : [
+			{
+         			"filename" : "kibana.yml",
+			        "sourceFilename" : "aux/kibana.yml"
+       			}]
                 }
-        },
+        	},
 		{
                 "name": "Logstash",
                 "label": "Logstash Data Processing Pipeline",
@@ -239,62 +156,29 @@
                 "configWriter": {
                         "generators": [
                         {
-                                "filename": "jvm.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
+                                "filename": "jvm.options",
+                                "configFormat": "properties"
                         },
                         {
-                                "filename": "elasticsearch.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
+                                "filename": "startup.options",
+                                "configFormat": "properties"
                         }
                         ],
-                        "peerConfigGenerators" : [
+			"auxConfigGenerators" : [
+       			{
+				"filename" : "logstash.yml",
+		                "sourceFilename" : "aux/logstash.conf"
+       			},
                         {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
+                                "filename" : "logstash.conf",
+                                "sourceFilename" : "aux/logstash.conf"
+                        },
+                        {
+                                "filename" : "pipelines.conf",
+                                "sourceFilename" : "aux/pipelines.conf"
                         }]
                 }
-        },
+        	},
 		{
                 "name": "Filebeat",
                 "label": "Filebeat Log Shipper",
@@ -325,64 +209,13 @@
                         }
                 ],
                 "configWriter": {
-                        "generators": [
+                        "auxConfigGenerators" : [
                         {
-                                "filename": "jvm.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
-                        },
-                        {
-                                "filename": "elasticsearch.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
-                        }
-                        ],
-                        "peerConfigGenerators" : [
-                        {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
+                                "filename" : "filebeat.yml",
+                                "sourceFilename" : "aux/filebeat.yml"
                         }]
-                }
-        },
+		}
+                },
 		{
                 "name": "Metricbeat",
                 "label": "Metricbeat Log Shipper",
@@ -413,64 +246,13 @@
                         }
                 ],
                 "configWriter": {
-                        "generators": [
+                        "auxConfigGenerators" : [
                         {
-                                "filename": "jvm.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
-                        },
-                        {
-                                "filename": "elasticsearch.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
-                        }
-                        ],
-                        "peerConfigGenerators" : [
-                        {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
+                                "filename" : "metricbeat.yml",
+                                "sourceFilename" : "aux/metricbeat.yml"
                         }]
                 }
-        },
+                },
 		{
                 "name": "Packetbeat",
                 "label": "Packetbeat Agent",
@@ -501,64 +283,13 @@
                         }
                 ],
                 "configWriter": {
-                        "generators": [
+                        "auxConfigGenerators" : [
                         {
-                                "filename": "jvm.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "Xms",
-                                        "Xmx",
-                                        "UseConcMarkSweepGC",
-                                        "CMSInitiatingOccupancyFraction",
-                                        "UseCMSInitiatingOccupancyOnly",
-                                        "DisableExplicitGC",
-                                        "AlwaysPreTouch",
-                                        "server",
-                                        "Xss",
-                                        "java_awt_headless",
-                                        "file_encoding",
-                                        "jna_nosys",
-                                        "jdk_io_permissionsUseCanonicalPath",
-                                        "io_netty_noUnsafe",
-                                        "io_netty_noKeySetOptimization",
-                                        "io_netty_recycler_maxCapacityPerThread",
-                                        "log4j_shutdownHookEnabled",
-                                        "log4j2_disable_jmx",
-                                        "log4j_skipJansi",
-                                        "HeapDumpOnOutOfMemoryError"
-                                ]
-                        },
-                        {
-                                "filename": "elasticsearch.properties",
-                                "configFormat": "properties",
-                                "includedParams": [
-                                        "minimum_master_nodes",
-                                        "cluster_name",
-                                        "http_port",
-                                        "path_data",
-                                        "path_logs",
-                                        "http_cors_enabled",
-                                        "http_cors_allow_origin"
-                                ],
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
-                        }
-                        ],
-                        "peerConfigGenerators" : [
-                        {
-                                "filename" : "nodes.properties",
-                                "params" : ["cluster_name"],
-                                "roleName" : "ES_NODE"
+                                "filename" : "packetbeat.yml",
+                                "sourceFilename" : "aux/packetbeat.yml"
                         }]
                 }
-        }
+                }
 	],
         "parameters": [
         {
