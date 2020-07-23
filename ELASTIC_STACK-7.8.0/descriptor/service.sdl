@@ -1,5 +1,5 @@
 {
-        "name": "Elastic Stack",
+        "name": "ELASTIC_STACK",
         "label": "Elastic Stack",
         "description": "Elastic Stack service",
         "version": 1,
@@ -26,13 +26,13 @@
                 "label" : "Force stop",
                 "description" : "Force stop of Elastic Stack",
                 "roleCommand" : "ForceStopRole",
-                "roleName" : "ES_NODE",
+                "roleName" : "ELASTICSEARCH",
                 "runMode" : "all"
                 }
         ],
         "roles": [
 		{
-                "name": "Elasticsearch",
+                "name": "ELASTICSEARCH",
                 "label": "Elasticsearch",
                 "pluralLabel": "Elasticsearch",
                 "jvmBased": true,
@@ -47,6 +47,12 @@
                                 "args" : ["stop"]
                                 }
                 },
+		"logging" : {
+			"dir" : "/var/log/elasticstack",
+			"filename" : "elasticsearch.log",
+			"modifiable" : true,
+			"loggingType" : "log4j"
+    		},
                 "commands": [
                         {
                         "name": "ForceStopRole",
@@ -64,7 +70,7 @@
                         "generators": [
                         {
                                 "filename": "jvm.options",
-                                "configFormat": "properties",
+                                "configFormat": "properties"
                         },
                         {
                                 "filename": "log4j2.properties",
@@ -88,7 +94,7 @@
                 }
         	},
 		{
-                "name": "Kibana",
+                "name": "KIBANA",
                 "label": "Kibana Dashboard",
                 "pluralLabel": "Kibana",
                 "jvmBased": true,
@@ -125,7 +131,7 @@
                 }
         	},
 		{
-                "name": "Logstash",
+                "name": "LOGSTASH",
                 "label": "Logstash Data Processing Pipeline",
                 "pluralLabel": "Logstash",
                 "jvmBased": true,
@@ -180,7 +186,7 @@
                 }
         	},
 		{
-                "name": "Filebeat",
+                "name": "FILEBEAT",
                 "label": "Filebeat Log Shipper",
                 "pluralLabel": "Filebeat",
                 "jvmBased": true,
@@ -217,7 +223,7 @@
 		}
                 },
 		{
-                "name": "Metricbeat",
+                "name": "METRICBEAT",
                 "label": "Metricbeat Log Shipper",
                 "pluralLabel": "Metricbeat",
                 "jvmBased": true,
@@ -254,7 +260,7 @@
                 }
                 },
 		{
-                "name": "Packetbeat",
+                "name": "ACKETBEATT",
                 "label": "Packetbeat Agent",
                 "pluralLabel": "PAcketbeat",
                 "jvmBased": true,
