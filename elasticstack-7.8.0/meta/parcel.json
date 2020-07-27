@@ -4,7 +4,7 @@
   "version":            "7.8.0",
   "setActiveSymlink":   true,
 
-  "depends": "CDH (>= 5.0),
+  "depends": "CDH (>=5.0),
 
   "scripts": {
     "defines": "elastic_stack_env.sh"

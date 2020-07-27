@@ -1,549 +1,565 @@
 {
-        "name": "ELASTIC_STACK",
-        "label": "Elastic Stack",
-        "description": "Elastic Stack service",
-        "version": 1,
-        "runAs": {
-                "user": "elastic",
-                "group": "elastic"
-        },
-        "maxInstances": 1,
-        "icon": "images/elastic_stack.png",
-        "compatibility": {
-                "generation": 1,
-                "cdhVersion": {
-                        "min": 5,
-                        "max": 5
-                }
-        },
-        "parcel": {
-                "requiredTags": ["cdh"],
-                "optionalTags": ["es-plugin"]
-        },
-        "commands" : [
-                {
-                "name" : "ForceStop",
-                "label" : "Force stop",
-                "description" : "Force stop of Elastic Stack",
-                "roleCommand" : "ForceStopRole",
-                "roleName" : "ELASTICSEARCH",
-                "runMode" : "all"
-                }
-        ],
-        "roles": [
-		{
-                "name": "ELASTICSEARCH",
-                "label": "Elasticsearch",
-                "pluralLabel": "Elasticsearch",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/elasticsearch-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/elasticsearch-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-		"logging" : {
-			"dir" : "/var/log/elasticstack",
-			"filename" : "elasticsearch.log",
-			"modifiable" : true,
-			"loggingType" : "log4j"
-    		},
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Elasticsearch",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/elasticsearch-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-                        "generators": [
-                        {
-                                "filename": "jvm.options",
-                                "configFormat": "properties"
-                        },
-                        {
-                                "filename": "log4j2.properties",
-                                "configFormat": "properties",
-                                "additionalConfigs" : [
-                                {
-                                        "key" : "node.name",
-                                        "value" : "${host}"
-                                },
-                                {
-                                        "key" : "network.host",
-                                        "value" : "[\"${host}\", _local_]"
-                                }]
-                        }], 
-			"auxConfigGenerators" : [
-    			{
-			      "filename" : "elasticsearch.yml",
-			      "sourceFilename" : "aux/elasticsearch.yml"
-			}
-  			]
-                }
-        	},
-		{
-                "name": "KIBANA",
-                "label": "Kibana Dashboard",
-                "pluralLabel": "Kibana",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/kibana-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/kibana-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Kibana",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/kibana-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-			"auxConfigGenerators" : [
-			{
-         			"filename" : "kibana.yml",
-			        "sourceFilename" : "aux/kibana.yml"
-       			}]
-                }
-        	},
-		{
-                "name": "LOGSTASH",
-                "label": "Logstash Data Processing Pipeline",
-                "pluralLabel": "Logstash",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/logstash-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/logstash-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Logstash",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/logstash-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-                        "generators": [
-                        {
-                                "filename": "jvm.options",
-                                "configFormat": "properties"
-                        },
-                        {
-                                "filename": "startup.options",
-                                "configFormat": "properties"
-                        }
-                        ],
-			"auxConfigGenerators" : [
-       			{
-				"filename" : "logstash.yml",
-		                "sourceFilename" : "aux/logstash.conf"
-       			},
-                        {
-                                "filename" : "logstash.conf",
-                                "sourceFilename" : "aux/logstash.conf"
-                        },
-                        {
-                                "filename" : "pipelines.conf",
-                                "sourceFilename" : "aux/pipelines.conf"
-                        }]
-                }
-        	},
-		{
-                "name": "FILEBEAT",
-                "label": "Filebeat Log Shipper",
-                "pluralLabel": "Filebeat",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/filebeat-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/filebeat-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Filebeat",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/filebeat-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-                        "auxConfigGenerators" : [
-                        {
-                                "filename" : "filebeat.yml",
-                                "sourceFilename" : "aux/filebeat.yml"
-                        }]
+	"name": "ELASTIC_STACK",
+	"label": "Elastic Stack",
+	"description": "Elastic Stack service",
+	"version": 1,
+	"runAs": {
+		"user": "elastic",
+		"group": "elastic"
+	},
+	"maxInstances": 1,
+	"icon": "images/elastic_stack.png",
+	"compatibility": {
+		"generation": 1,
+		"cdhVersion": {
+			"min": 5,
+			"max": 5
 		}
-                },
+	},
+	"parcel": {
+		"requiredTags": ["cdh"],
+		"optionalTags": ["es-plugin"]
+	},
+	"serviceInit" : {
+		"preStartSteps" : [
+			{ 
+				"commandName" : "CreateHomeDirCommand"
+			}
+		],
+	},
+	"commands" : [
 		{
-                "name": "METRICBEAT",
-                "label": "Metricbeat Log Shipper",
-                "pluralLabel": "Metricbeat",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/metricbeat-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/metricbeat-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Metricbeat",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/metricbeat-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-                        "auxConfigGenerators" : [
-                        {
-                                "filename" : "metricbeat.yml",
-                                "sourceFilename" : "aux/metricbeat.yml"
-                        }]
-                }
-                },
-		{
-                "name": "ACKETBEATT",
-                "label": "Packetbeat Agent",
-                "pluralLabel": "PAcketbeat",
-                "jvmBased": true,
-                "startRunner": {
-                        "program": "scripts/packetbeat-control.sh",
-                        "args": ["start"]
-                },
-                "stopRunner" : {
-                        "timeout" : "90000",
-                        "runner" : {
-                                "program" : "scripts/packetbeat-control.sh",
-                                "args" : ["stop"]
-                                }
-                },
-                "commands": [
-                        {
-                        "name": "ForceStopRole",
-                        "label": "Force Stop Role",
-                        "description": "Force stop of Elastic Search Node",
-                        "expectedExitCodes": [0],
-                        "requiredRoleState": "stopped",
-                        "commandRunner": {
-                                "program": "scripts/packetbeat-control.sh",
-                                "args": ["stop"]
-                                }
-                        }
-                ],
-                "configWriter": {
-                        "auxConfigGenerators" : [
-                        {
-                                "filename" : "packetbeat.yml",
-                                "sourceFilename" : "aux/packetbeat.yml"
-                        }]
-                }
-                }
+			"name" : "ForceStop",
+			"label" : "Force stop",
+			"description" : "Force stop of Elastic Stack",
+			"roleCommand" : "ForceStopRole",
+			"roleName" : "ELASTICSEARCH",
+			"runMode" : "all"
+		}
 	],
-        "parameters": [
-        {
-                "name": "minimum_master_nodes",
-                "label": "Minimum number of master nodes",
-                "description": "Minimum number of master nodes",
-                "configName": "discovery.zen.minimum_master_nodes",
-                "required": "true",
-                "type": "long",
-                "default": "1"
-        },
-        {
-                "name": "cluster_name",
-                "label": "cluster.name",
-                "description": "Name of Cluster",
-                "configName": "cluster.name",
-                "required": "true",
-                "type": "string",
-                "configurableInWizard": true,
-                "default": "data-lakes"
-        },
-        {
-                "name": "http_port",
-                "label": "HTTP port",
-                "description": "Set a custom port for HTTP",
-                "configName": "http.port",
-                "required": "true",
-                "type": "long",
-                "default": "9200"
-        },
-        {
-                "name": "path_data",
-                "label": "Path to data directory",
-                "description": "Path to directory where to store the data (separate multiple locations by comma)",
-                "configName": "path.data",
-                "required": "true",
-                "type": "path",
-                "pathType": "localDataDir",
-                "default": "/var/lib/elasticsearch/"
-        },
-        {
-                "name": "path_logs",
-                "label": "Path to logs directory",
-                "description": "Path to log files",
-                "configName": "path.logs",
-                "required": "true",
-                "type": "path",
-                "pathType": "localDataDir",
-                "default": "/var/log/elasticsearch/"
-        },
-        {
-                "name": "http_cors_enabled",
-                "label": "Cross-origin resource sharing",
-                "description": "Enable or disable cross-origin resource sharing",
-                "configName": "http.cors.enabled",
-                "required": "true",
-                "type": "boolean",
-                "default": "true"
-        },
-        {
-                "name": "http_cors_allow_origin",
-                "label": "Cross-origin allow pattern",
-                "description": "Which origins to allow. Defaults to no origins allowed. If you prepend and append a / to the value, this will be treated as a regular expression, allowing you to support HTTP and HTTPs. for example using /https?:\/\/localhost(:[0-9]+)?/ would return the request header appropriately in both cases. * is a valid value but is considered a security risk as your elasticsearch instance is open to cross origin requests from anywhere.",
-                "configName": "http.cors.allow-origin",
-                "required": "true",
-                "type": "string",
-                "default": "/.*/"
-        },
-        {
-                "name": "Xms",
-                "label": "JVM Xms",
-                "description": "Xms represents the initial size of total heap space",
-                "configName": "Xms",
-                "required": "true",
-                "type": "string",
-                "default": "-Xms2g"
-        },
-        {
-                "name": "Xmx",
-                "label": "JVM Xmx",
-                "description": "Xms represents the maximum size of total heap space",
-                "configName": "Xmx",
-                "required": "true",
-                "type": "string",
-                "default": "-Xmx2g"
-        },
-        {
-                "name": "UseConcMarkSweepGC",
-                "label": "JVM UseConcMarkSweepGC",
-                "description": "Enable ConcurrentMarkSweep (CMS)",
-                "configName": "UseConcMarkSweepGC",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:+UseConcMarkSweepGC"
-        },
-        {
-                "name": "CMSInitiatingOccupancyFraction",
-                "label": "JVM CMSInitiatingOccupancyFraction",
-                "description": "CMS Initiating Occupancy Fraction",
-                "configName": "CMSInitiatingOccupancyFraction",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:CMSInitiatingOccupancyFraction=75"
-        },
-        {
-                "name": "UseCMSInitiatingOccupancyOnly",
-                "label": "JVM UseCMSInitiatingOccupancyOnly",
-                "description": "Use CMS Initiating Occupancy Only",
-                "configName": "UseCMSInitiatingOccupancyOnly",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:+UseCMSInitiatingOccupancyOnly"
-        },
-        {
-                "name": "DisableExplicitGC",
-                "label": "JVM DisableExplicitGC",
-                "description": "Disable calls to System#gc",
-                "configName": "DisableExplicitGC",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:+DisableExplicitGC"
-        },
-        {
-                "name": "AlwaysPreTouch",
-                "label": "JVM AlwaysPreTouch",
-                "description": "Pre-touch memory pages used by the JVM during initialization",
-                "configName": "AlwaysPreTouch",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:+AlwaysPreTouch"
-        },
-        {
-                "name": "server",
-                "label": "JVM Server",
-                "description": "Force the server VM (remove on 32-bit client JVMs)",
-                "configName": "server",
-                "required": "false",
-                "type": "string",
-                "default": "-server"
-        },
-        {
-                "name": "Xss",
-                "label": "JVM Xss",
-                "description": "Explicitly set the stack size (reduce to 320k on 32-bit client JVMs)",
-                "configName": "Xss",
-                "required": "true",
-                "type": "string",
-                "default": "-Xss1m"
-        },
-        {
-                "name": "java_awt_headless",
-                "label": "JVM java.awt.headless",
-                "description": "Set to headless, just in case",
-                "configName": "java.awt.headless",
-                "required": "false",
-                "type": "string",
-                "default": "-Djava.awt.headless=true"
-        },
-        {
-                "name": "file_encoding",
-                "label": "JVM file.encoding",
-                "description": "Ensure UTF-8 encoding by default (e.g. filenames)",
-                "configName": "file.encoding",
-                "required": "true",
-                "type": "string",
-                "default": "-Dfile.encoding=UTF-8"
-        },
-        {
-                "name": "jna_nosys",
-                "label": "JVM jna.nosys",
-                "description": "Use our provided JNA always versus the system one",
-                "configName": "jna.nosys",
-                "required": "true",
-                "type": "string",
-                "default": "-Djna.nosys=true"
-        },
-        {
-                "name": "jdk_io_permissionsUseCanonicalPath",
-                "label": "JVM jdk.io.permissionsUseCanonicalPath",
-                "description": "Use old-style file permissions on JDK9",
-                "configName": "jdk.io.permissionsUseCanonicalPath",
-                "required": "false",
-                "type": "string",
-                "default": "-Djdk.io.permissionsUseCanonicalPath=true"
-        },
-        {
-                "name": "io_netty_noUnsafe",
-                "label": "JVM io.netty.noUnsafe",
-                "description": "Flag to configure Netty",
-                "configName": "io.netty.noUnsafe",
-                "required": "false",
-                "type": "string",
-                "default": "-Dio.netty.noUnsafe=true"
-        },
-        {
-                "name": "io_netty_noKeySetOptimization",
-                "label": "JVM io.netty.noKeySetOptimization",
-                "description": "Flag to configure Netty",
-                "configName": "io.netty.noKeySetOptimization",
-                "required": "false",
-                "type": "string",
-                "default": "-Dio.netty.noKeySetOptimization=true"
-        },
-        {
-                "name": "io_netty_recycler_maxCapacityPerThread",
-                "label": "JVM io.netty.recycler.maxCapacityPerThread",
-                "description": "Flag to configure Netty",
-                "configName": "io.netty.recycler.maxCapacityPerThread",
-                "required": "false",
-                "type": "string",
-                "default": "-Dio.netty.recycler.maxCapacityPerThread=0"
-        },
-        {
-                "name": "log4j_shutdownHookEnabled",
-                "label": "JVM log4j.shutdownHookEnabled",
-                "description": "Log4j property",
-                "configName": "log4j.shutdownHookEnabled",
-                "required": "false",
-                "type": "string",
-                "default": "-Dlog4j.shutdownHookEnabled=false"
-        },
-        {
-                "name": "log4j2_disable_jmx",
-                "label": "JVM log4j2.disable.jmx",
-                "description": "Log4j property",
-                "configName": "log4j2.disable.jmx",
-                "required": "false",
-                "type": "string",
-                "default": "-Dlog4j2.disable.jmx=true"
-        },
-        {
-                "name": "log4j_skipJansi",
-                "label": "JVM log4j.skipJansi",
-                "description": "Log4j property",
-                "configName": "log4j.skipJansi",
-                "required": "false",
-                "type": "string",
-                "default": "-Dlog4j.skipJansi=true"
-        },
-        {
-                "name": "HeapDumpOnOutOfMemoryError",
-                "label": "JVM HeapDumpOnOutOfMemoryError",
-                "description": "Generate a heap dump when an allocation from the Java heap fails",
-                "configName": "HeapDumpOnOutOfMemoryError",
-                "required": "false",
-                "type": "string",
-                "default": "-XX:+HeapDumpOnOutOfMemoryError"
-        }
-        ]
+	"roles": [
+		{
+			"name": "ELASTICSEARCH",
+			"label": "Elasticsearch",
+			"pluralLabel": "Elasticsearch",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/elasticsearch-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : {
+					"program" : "scripts/elasticsearch-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"logging" : {
+				"dir" : "/var/log/elasticstack",
+				"filename" : "elasticsearch.log",
+				"modifiable" : true,
+				"loggingType" : "log4j"
+			},
+			"commands": [
+					{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Elasticsearch",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": {
+						"program": "scripts/elasticsearch-control.sh",
+						"args": ["stop"]
+					}
+				}
+			],
+			"configWriter": {
+				"generators": [
+					{
+						"filename": "jvm.options",
+						"configFormat": "properties"
+					},
+					{
+						"filename": "log4j2.properties",
+						"configFormat": "properties",
+						"additionalConfigs" : [
+							{
+								"key" : "node.name",
+								"value" : "${host}"
+							},
+							{
+								"key" : "network.host",
+								"value" : "[\"${host}\", _local_]"
+							}
+						]
+					}
+				], 
+				"auxConfigGenerators" : [
+					{
+						"filename" : "elasticsearch.yml",
+						"sourceFilename" : "aux/elasticsearch.yml"
+					}
+				]
+			}
+		},
+		{
+			"name": "KIBANA",
+			"label": "Kibana Dashboard",
+			"pluralLabel": "Kibana",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/kibana-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : {
+					"program" : "scripts/kibana-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"commands": [
+				{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Kibana",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": {
+						"program": "scripts/kibana-control.sh",
+						"args": ["stop"]
+					}
+				}
+			],
+			"configWriter": {
+				"auxConfigGenerators" : [
+					{
+						"filename" : "kibana.yml",
+						"sourceFilename" : "aux/kibana.yml"
+					}
+				]
+			}
+		},
+		{
+			"name": "LOGSTASH",
+			"label": "Logstash Data Processing Pipeline",
+			"pluralLabel": "Logstash",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/logstash-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : {
+					"program" : "scripts/logstash-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"commands": [
+				{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Logstash",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": {
+						"program": "scripts/logstash-control.sh",
+						"args": ["stop"]
+					}
+				}
+			],
+			"configWriter": {
+				"generators": [
+					{
+						"filename": "jvm.options",
+						"configFormat": "properties"
+					},
+					{
+						"filename": "startup.options",
+						"configFormat": "properties"
+					}
+				],
+				"auxConfigGenerators" : [
+					{
+						"filename" : "logstash.yml",
+						"sourceFilename" : "aux/logstash.conf"
+					},
+					{
+						"filename" : "logstash.conf",
+						"sourceFilename" : "aux/logstash.conf"
+					},
+					{
+						"filename" : "pipelines.conf",
+						"sourceFilename" : "aux/pipelines.conf"
+					}
+				]
+			}
+		},
+		{
+			"name": "FILEBEAT",
+			"label": "Filebeat Log Shipper",
+			"pluralLabel": "Filebeat",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/filebeat-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : {
+					"program" : "scripts/filebeat-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"commands": [
+				{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Filebeat",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": {
+						"program": "scripts/filebeat-control.sh",
+						"args": ["stop"]
+					}
+				}
+			],
+			"configWriter": {
+				"auxConfigGenerators" : [
+					{
+						"filename" : "filebeat.yml",
+						"sourceFilename" : "aux/filebeat.yml"
+					}
+				]
+			}
+		},
+		{
+			"name": "METRICBEAT",
+			"label": "Metricbeat Log Shipper",
+			"pluralLabel": "Metricbeat",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/metricbeat-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : {
+					"program" : "scripts/metricbeat-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"commands": [
+				{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Metricbeat",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": {
+						"program": "scripts/metricbeat-control.sh",
+						"args": ["stop"]
+					}
+				}
+			],
+			"configWriter": {
+				"auxConfigGenerators" : [
+					{
+						"filename": "metricbeat.yml",
+						"sourceFilename": "aux/metricbeat.yml"
+					}
+				]
+			}
+		},
+		{
+			"name": "PACKETBEAT",
+			"label": "Packetbeat Agent",
+			"pluralLabel": "PAcketbeat",
+			"jvmBased": true,
+			"startRunner": {
+				"program": "scripts/packetbeat-control.sh",
+				"args": ["start"]
+			},
+			"stopRunner" : {
+				"timeout" : "90000",
+				"runner" : 
+				{					
+					"program" : "scripts/packetbeat-control.sh",
+					"args" : ["stop"]
+				}
+			},
+			"commands": [
+				{
+					"name": "ForceStopRole",
+					"label": "Force Stop Role",
+					"description": "Force stop of Elastic Search Node",
+					"expectedExitCodes": [0],
+					"requiredRoleState": "stopped",
+					"commandRunner": 
+						{
+							"program": "scripts/packetbeat-control.sh",
+							"args": ["stop"]
+						}
+				}
+			],
+			"configWriter": {
+				"auxConfigGenerators" : [
+					{
+						"filename" : "packetbeat.yml",
+						"sourceFilename" : "aux/packetbeat.yml"
+					}
+				]
+			}
+		}
+	],
+	"parameters": [
+		{
+			"name": "minimum_master_nodes",
+			"label": "Minimum number of master nodes",
+			"description": "Minimum number of master nodes",
+			"configName": "discovery.zen.minimum_master_nodes",
+			"required": "true",
+			"type": "long",
+			"default": "1"
+		},
+		{
+			"name": "cluster_name",
+			"label": "cluster.name",
+			"description": "Name of Cluster",
+			"configName": "cluster.name",
+			"required": "true",
+			"type": "string",
+			"configurableInWizard": true,
+			"default": "data-lakes"
+		},
+		{
+			"name": "http_port",
+			"label": "HTTP port",
+			"description": "Set a custom port for HTTP",
+			"configName": "http.port",
+			"required": "true",
+			"type": "long",
+			"default": "9200"
+		},
+		{
+			"name": "path_data",
+			"label": "Path to data directory",
+			"description": "Path to directory where to store the data (separate multiple locations by comma)",
+			"configName": "path.data",
+			"required": "true",
+			"type": "path",
+			"pathType": "localDataDir",
+			"default": "/var/lib/elasticsearch/"
+		},
+		{
+			"name": "path_logs",
+			"label": "Path to logs directory",
+			"description": "Path to log files",
+			"configName": "path.logs",
+			"required": "true",
+			"type": "path",
+			"pathType": "localDataDir",
+			"default": "/var/log/elasticsearch/"
+		},
+		{
+			"name": "http_cors_enabled",
+			"label": "Cross-origin resource sharing",
+			"description": "Enable or disable cross-origin resource sharing",
+			"configName": "http.cors.enabled",
+			"required": "true",
+			"type": "boolean",
+			"default": "true"
+		},
+		{
+			"name": "http_cors_allow_origin",
+			"label": "Cross-origin allow pattern",
+			"description": "Which origins to allow. Defaults to no origins allowed. If you prepend and append a / to the value, this will be treated as a regular expression, allowing you to support HTTP and HTTPs. for example using /https?:\/\/localhost(:[0-9]+)?/ would return the request header appropriately in both cases. * is a valid value but is considered a security risk as your elasticsearch instance is open to cross origin requests from anywhere.",
+			"configName": "http.cors.allow-origin",
+			"required": "true",
+			"type": "string",
+			"default": "/.*/"
+		},
+		{
+			"name": "Xms",
+			"label": "JVM Xms",
+			"description": "Xms represents the initial size of total heap space",
+			"configName": "Xms",
+			"required": "true",
+			"type": "string",
+			"default": "-Xms2g"
+		},
+		{
+			"name": "Xmx",
+			"label": "JVM Xmx",
+			"description": "Xms represents the maximum size of total heap space",
+			"configName": "Xmx",
+			"required": "true",
+			"type": "string",
+			"default": "-Xmx2g"
+		},
+		{
+			"name": "UseConcMarkSweepGC",
+			"label": "JVM UseConcMarkSweepGC",
+			"description": "Enable ConcurrentMarkSweep (CMS)",
+			"configName": "UseConcMarkSweepGC",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:+UseConcMarkSweepGC"
+		},
+		{
+			"name": "CMSInitiatingOccupancyFraction",
+			"label": "JVM CMSInitiatingOccupancyFraction",
+			"description": "CMS Initiating Occupancy Fraction",
+			"configName": "CMSInitiatingOccupancyFraction",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:CMSInitiatingOccupancyFraction=75"
+		},
+		{
+			"name": "UseCMSInitiatingOccupancyOnly",
+			"label": "JVM UseCMSInitiatingOccupancyOnly",
+			"description": "Use CMS Initiating Occupancy Only",
+			"configName": "UseCMSInitiatingOccupancyOnly",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:+UseCMSInitiatingOccupancyOnly"
+		},
+		{
+			"name": "DisableExplicitGC",
+			"label": "JVM DisableExplicitGC",
+			"description": "Disable calls to System#gc",
+			"configName": "DisableExplicitGC",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:+DisableExplicitGC"
+		},
+		{
+			"name": "AlwaysPreTouch",
+			"label": "JVM AlwaysPreTouch",
+			"description": "Pre-touch memory pages used by the JVM during initialization",
+			"configName": "AlwaysPreTouch",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:+AlwaysPreTouch"
+		},
+		{
+			"name": "server",
+			"label": "JVM Server",
+			"description": "Force the server VM (remove on 32-bit client JVMs)",
+			"configName": "server",
+			"required": "false",
+			"type": "string",
+			"default": "-server"
+		},
+		{
+			"name": "Xss",
+			"label": "JVM Xss",
+			"description": "Explicitly set the stack size (reduce to 320k on 32-bit client JVMs)",
+			"configName": "Xss",
+			"required": "true",
+			"type": "string",
+			"default": "-Xss1m"
+		},
+		{
+			"name": "java_awt_headless",
+			"label": "JVM java.awt.headless",
+			"description": "Set to headless, just in case",
+			"configName": "java.awt.headless",
+			"required": "false",
+			"type": "string",
+			"default": "-Djava.awt.headless=true"
+		},
+		{
+			"name": "file_encoding",
+			"label": "JVM file.encoding",
+			"description": "Ensure UTF-8 encoding by default (e.g. filenames)",
+			"configName": "file.encoding",
+			"required": "true",
+			"type": "string",
+			"default": "-Dfile.encoding=UTF-8"
+		},
+		{
+			"name": "jna_nosys",
+			"label": "JVM jna.nosys",
+			"description": "Use our provided JNA always versus the system one",
+			"configName": "jna.nosys",
+			"required": "true",
+			"type": "string",
+			"default": "-Djna.nosys=true"
+		},
+		{
+			"name": "jdk_io_permissionsUseCanonicalPath",
+			"label": "JVM jdk.io.permissionsUseCanonicalPath",
+			"description": "Use old-style file permissions on JDK9",
+			"configName": "jdk.io.permissionsUseCanonicalPath",
+			"required": "false",
+			"type": "string",
+			"default": "-Djdk.io.permissionsUseCanonicalPath=true"
+		},
+		{
+			"name": "io_netty_noUnsafe",
+			"label": "JVM io.netty.noUnsafe",
+			"description": "Flag to configure Netty",
+			"configName": "io.netty.noUnsafe",
+			"required": "false",
+			"type": "string",
+			"default": "-Dio.netty.noUnsafe=true"
+		},
+		{
+			"name": "io_netty_noKeySetOptimization",
+			"label": "JVM io.netty.noKeySetOptimization",
+			"description": "Flag to configure Netty",
+			"configName": "io.netty.noKeySetOptimization",
+			"required": "false",
+			"type": "string",
+			"default": "-Dio.netty.noKeySetOptimization=true"
+		},
+		{
+			"name": "io_netty_recycler_maxCapacityPerThread",
+			"label": "JVM io.netty.recycler.maxCapacityPerThread",
+			"description": "Flag to configure Netty",
+			"configName": "io.netty.recycler.maxCapacityPerThread",
+			"required": "false",
+			"type": "string",
+			"default": "-Dio.netty.recycler.maxCapacityPerThread=0"
+		},
+		{
+			"name": "log4j_shutdownHookEnabled",
+			"label": "JVM log4j.shutdownHookEnabled",
+			"description": "Log4j property",
+			"configName": "log4j.shutdownHookEnabled",
+			"required": "false",
+			"type": "string",
+			"default": "-Dlog4j.shutdownHookEnabled=false"
+		},
+		{
+			"name": "log4j2_disable_jmx",
+			"label": "JVM log4j2.disable.jmx",
+			"description": "Log4j property",
+			"configName": "log4j2.disable.jmx",
+			"required": "false",
+			"type": "string",
+			"default": "-Dlog4j2.disable.jmx=true"
+		},
+		{
+			"name": "log4j_skipJansi",
+			"label": "JVM log4j.skipJansi",
+			"description": "Log4j property",
+			"configName": "log4j.skipJansi",
+			"required": "false",
+			"type": "string",
+			"default": "-Dlog4j.skipJansi=true"
+		},
+		{
+			"name": "HeapDumpOnOutOfMemoryError",
+			"label": "JVM HeapDumpOnOutOfMemoryError",
+			"description": "Generate a heap dump when an allocation from the Java heap fails",
+			"configName": "HeapDumpOnOutOfMemoryError",
+			"required": "false",
+			"type": "string",
+			"default": "-XX:+HeapDumpOnOutOfMemoryError"
+		}
+	]
 }
 
