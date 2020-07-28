@@ -73,6 +73,51 @@
 					}
 				}
 			],
+			"parameters": [
+				{
+					"name" : "Xmx",
+					"label" : "Xmx",
+					"description" : "The Server Timeout",
+					"configName" : "Xmx",
+					"required" : true,
+					"configurableInWizard" : true,
+					"default" : 1,
+					"invalidValues": [0],
+					"type" : "memory", 
+					"unit" : "gigabytes"
+				},
+				{
+					"name" : "cluster_name",
+					"label" : "Name of the cluster",
+					"description" : "Use a descriptive name for your cluster",
+					"configName" : "cluster.name",
+					"required" : true,
+					"configurableInWizard" : true,
+					"default" : "my-application",
+					"type" : "string
+				},
+				{
+					"name" : "discovery_seed_hosts",
+					"label" : "Discovery seed hosts",
+					"description" : "Pass an initial list of hosts to perform discovery when this node is started: ",
+					"configName": "discovery.seed_hosts",
+					"required": true,
+					"configurableInWizard": true,
+					"default": ["127.0.0.1", "[::1]"],
+					"invalidValues": [],
+					"type": "string_array"
+				},
+				{
+					"name" : "http_port",
+					"label" : "Discovery seed hosts",
+					"description" : "Pass an initial list of hosts to perform discovery when this node is started: ",
+					"configName": "http.port",
+					"required": true,
+					"configurableInWizard": true,
+					"default": "9200",
+					"type": "port"
+				}
+			],
 			"configWriter": {
 				"generators": [
 					{
