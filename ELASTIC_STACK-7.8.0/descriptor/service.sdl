@@ -139,7 +139,7 @@
 					"description" : "Path to directory where to store the data (separate multiple locations by comma)",
 					"configName" : "path.data",
 					"required" : true,
-					"configurableInWizard":  true,
+					"configurableInWizard" : true,
 					"default" : "/var/lib/elasticsearch",
 					"type" : "path",
 					"pathType" : "localDataDir",
@@ -149,14 +149,78 @@
 					"name" : "path_log",
 					"label" : "Log path",
 					"description" : "Path to log files",
-					"configName": "path.log",
-					"required": true,
-					"configurableInWizard": true,
+					"configName" : "path.log",
+					"required" : true,
+					"configurableInWizard" : true,
 					"default" : "/var/log/elasticsearch",
 					"type" : "path",
 					"pathType" : "localDataDir",
 					"mode" : "0750"
-				}
+				},
+				{
+					"name" : "xpack_security_transport_ssl_enabled",
+					"label" : "xpack_security_transport_ssl_enabled",
+					"description" : "Enable or disable TLS for the transport networking layer",
+					"configName": "xpack.security.transport.ssl.enabled",
+					"required": no,
+					"configurableInWizard" : true,
+					"default" : "false",
+					"type" : "boolean"
+				},
+				{
+					"name" : "xpack_security_transport_ssl_verification_mode",
+					"label" : "xpack_security_transport_ssl_verification_mode",
+					"description" : "Verification mode for the transport networking layer TLS",
+					"configName": "xpack.security.transport.ssl.verification_mode",
+					"required": no,
+					"configurableInWizard" : true,
+					"default" : "full",
+					"type" : "string",
+					"conformRegex" : "full|certificate|none"
+				},
+				{
+					"name" : "xpack_security_transport_ssl_keystore_path",
+					"label" : "xpack_security_transport_ssl_keystore_path",
+					"description" : "Path of the TLS keystore for the transport networking layer",
+					"configName": "xpack.security.transport.ssl.keystore.path",
+					"required" : no,
+					"configurableInWizard" : true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode" : "0640"
+				},
+				{
+					"name" : "xpack_security_transport_ssl_truststore_path",
+					"label" : "xpack_security_transport_ssl_truststore_path",
+					"description" : "Path to the truststore for the transport networking layer TLS",
+					"configName" : "xpack.security.transport.ssl.truststore.path",
+					"required": no,
+					"configurableInWizard" : true,
+					"type" : "path"
+					"pathType" : "localDataFile",
+					"mode" : "0644"
+				},
+				{
+					"name" : "xpack_security_http_ssl_enabled",
+					"label" : "xpack_security_transport_ssl_enabled",
+					"description" : "Enable or disable TLS for the client communication",
+					"configName": "xpack.security.http.ssl.enabled",
+					"required": no,
+					"configurableInWizard" : true,
+					"default" : "false",
+					"type" : "boolean"
+				},
+				{
+					"name" : "xpack_security_http_ssl_keystore_path",
+					"label" : "xpack_security_http_ssl_keystore_path",
+					"description" : "Path to the TLS keystore for the client communication",
+					"configName": "xpack.security.http.ssl.keystore.path",
+					"required" : no,
+					"configurableInWizard" : true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode" : "0640"
+				}				
 			],
 			"configWriter": {
 				"generators": [
@@ -206,11 +270,147 @@
 					}
 				}
 			],
+			"parameters": [
+				{
+					"name" : "server_port",
+					"label" : "server_port",
+					"description" : "Kibana is served by a back end server. This setting specifies the port to use.",
+					"configName" : "server.port",
+					"required" : no,
+					"configurableInWizard" : true,
+					"default" : 5601,
+					"type" : "port"
+				},
+				{
+					"name" : "server_host",
+					"label" : "server_host",
+					"description" : "Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values. The default is 'localhost', which usually means remote machines will not be able to connect. To allow connections from remote users, set this parameter to a non-loopback address.",
+					"configName" : "server.host",
+					"required" : true,
+					"configurableInWizard" : true,
+					"default" : "localhost",
+					"type" : "string
+				},
+				{
+					"name" : "server_name",
+					"label" : "server_name",
+					"description" : "The Kibana server's name. This is used for display purposes.",
+					"configName": "server.name",
+					"required": no,
+					"configurableInWizard": true,
+					"default": "your-hostname",
+					"type": "string"
+				},
+				{
+					"name" : "elasticsearch_hosts",
+					"label" : "Elasticsearch hosts",
+					"description" : "The URLs of the Elasticsearch instances to use for all your queries.",
+					"configName" : "elasticsearch.hosts",
+					"required" : true,
+					"configurableInWizard" : true,
+					"default" : "["http://localhost:9200"]",
+					"type" : "string_array"
+				},
+				{
+					"name" : "elasticsearch_preserveHost",
+					"label" : "Elasticsearch preserve host",
+					"description" : "When this setting's value is true Kibana uses the hostname specified in the server.host setting. When the value of this setting is false, Kibana uses the hostname of the host that connects to this Kibana instance.",
+					"configName" : "elasticsearch.preserveHost",
+					"required" : no,
+					"configurableInWizard" : true,
+					"default" : true,
+					"type": "boolean"
+				},
+				{
+					"name" : "kibana_index",
+					"label" : "Kibana index",
+					"description" : "Kibana uses an index in Elasticsearch to store saved searches, visualizations and dashboards. Kibana creates a new index if the index doesn't already exist.",
+					"configName" : "kibana.index",
+					"required" : no,
+					"configurableInWizard":  true,
+					"default" : ".kibana",
+					"type" : "string"
+				},
+				{
+					"name" : "elasticsearch_username",
+					"label" : "Elasticsearch username",
+					"description" : "If your Elasticsearch is protected with basic authentication, these settings provide the username and password that the Kibana server uses to perform maintenance on the Kibana index at startup. Your Kibana users still need to authenticate with Elasticsearch, which is proxied through the Kibana server.",
+					"configName": "elasticsearch.username",
+					"required": no,
+					"configurableInWizard": true,
+					"default" : "kibana_system",
+					"type" : "string",
+				},
+				{
+					"name" : "elasticsearch_password",
+					"label" : "Elasticsearch password",
+					"description" : "If your Elasticsearch is protected with basic authentication, these settings provide the username and password that the Kibana server uses to perform maintenance on the Kibana index at startup. Your Kibana users still need to authenticate with Elasticsearch, which is proxied through the Kibana server.",
+					"configName" : "elasticsearch.password",
+					"required" : no,
+					"configurableInWizard" : "true",
+					"default" : "kibana_system",
+					"type" : "string",
+				},
+				{
+					"name" : "server_ssl_enabled",
+					"label" : "Enable SSL",
+					"description" : "Enable SSL for the traffic between the browser and Kibana.",
+					"configName" : "server.ssl.enabled",
+					"required" : no,
+					"configurableInWizard" : true,
+					"default" : "false",
+					"type" : "boolean",
+				},
+				{
+					"name" : "server_ssl_certificate",
+					"label" : "Server SSL certificate",
+					"description" : "Path to the PEM-format SSL certificate",
+					"configName": "server.ssl.certificate",
+					"required": no,
+					"configurableInWizard": true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode": "0644"
+				},
+				{
+					"name" : "server_ssl_key",
+					"label" : "Server SSL key",
+					"description" : "Path to the PEM-format SSL key",
+					"configName": "server.ssl.key",
+					"required": no,
+					"configurableInWizard": true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode": "0400"
+				},
+				{
+					"name" : "elasticsearch_ssl_certificate",
+					"label" : "Elasticsearch SSL certificate",
+					"description" : "Provides the path to the PEM-format SSL certificate file. It is used to verify the identity of Kibana to Elasticsearch and is required when xpack.security.http.ssl.client_authentication in Elasticsearch is set to required.",
+					"configName": "elasticsearch.ssl.certificate",
+					"required": no,
+					"configurableInWizard": true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode": "0644"
+				},
+				{
+					"name" : "Elasticsearch_ssl_key",
+					"label" : "Elasticsearch SSL key",
+					"description" : "Provides the path to the PEM-format SSL key file. It is used to verify the identity of Kibana to Elasticsearch and is required when xpack.security.http.ssl.client_authentication in Elasticsearch is set to required.",
+					"configName": "elasticsearchx.ssl.key",
+					"required": no,
+					"configurableInWizard": true,
+					"type" : "path",
+					"pathType" : "localDataFile",
+					"mode": "0400"
+				}
+			],
 			"configWriter": {
-				"auxConfigGenerators" : [
+				"generators": [
 					{
-						"filename" : "kibana.yml",
-						"sourceFilename" : "aux/kibana.yml"
+						"filename": "kibana.yml",
+						"configFormat": "properties"
 					}
 				]
 			}
